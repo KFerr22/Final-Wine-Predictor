@@ -1,3 +1,4 @@
+from collections import namedtuple
 import os
 import pandas as pd
 from flask import (
@@ -7,8 +8,13 @@ from flask import (
     jsonify,
     request)
 
+# from pathlib import Path
+
 #from flask_pymongo import PyMongo
 # import new_wine_predictor
+from ml import ML
+
+import tempfile
 
 app = Flask(__name__)
 
@@ -56,48 +62,80 @@ def index():
 @app.route("/predict_new_wine")
 def predict_new_wine():
     # new_wine_predictor
-    return render_template("predict_new_wine.html")
+    return render_template("predict_new_wine.html")        
 
 # Query the database and send the jsonified results
-@app.route("/send", methods=["GET", "POST"])
+@app.route("/send", methods=["POST"])
 def send():
-    if request.method == "POST":
-        fixed_acidity = request.form["fixed_acidity"]
-        volatile_acidity = request.form["volatile_acidity"]
-        citric_acid = request.form["citric_acid"]
-        residual_sugar = request.form["residual_sugar"]
-        chlorides = request.form["chlorides"]
-        free_sulfur_dioxide = request.form["free_sulfur_dioxide"]
-        total_sulfur_dioxide = request.form["total_sulfur_dioxide"]
-        density = request.form["density"]
-        pH = request.form["pH"]
-        sulphates = request.form["sulphates"]
-        alcohol = request.form["alcohol"]
+    fixed_acidity = request.form["fixed_acidity"]
+    volatile_acidity = request.form["volatile_acidity"]
+    citric_acid = request.form["citric_acid"]
+    residual_sugar = request.form["residual_sugar"]
+    chlorides = request.form["chlorides"]
+    free_sulfur_dioxide = request.form["free_sulfur_dioxide"]
+    total_sulfur_dioxide = request.form["total_sulfur_dioxide"]
+    density = request.form["density"]
+    pH = request.form["pH"]
+    sulphates = request.form["sulphates"]
+    alcohol = request.form["alcohol"]
 
-        # test output
-        print(sulphates)
+    wine_data = {
+        "fixed acidity": fixed_acidity,
+        "volatile acidity": volatile_acidity,
+        "citric acid": citric_acid,
+        "residual sugar": residual_sugar,
+        "chlorides": chlorides,
+        "free sulfur dioxide": free_sulfur_dioxide,
+        "total sulfur dioxide": total_sulfur_dioxide,
+        "density": density,
+        "pH": pH,
+        "sulphates": sulphates,
+        "alcohol": alcohol
+    }
 
-        # wine_dict = {
-        #     "fixed_acidity": fixed_acidity,
-        #     "volatile_acidity": volatile_acidity,
-        #     "citric_acid": citric_acid,
-        #     "residual_sugar": residual_sugar,
-        #     "chlorides": chlorides,
-        #     "free_sulfur_dioxide": free_sulfur_dioxide,
-        #     "total_sulfur_dioxide": total_sulfur_dioxide,
-        #     "density": density,
-        #     "pH": pH,
-        #     "sulphates": sulphates,
-        #     "alcohol": alcohol
-        # }
-        # wine_df = pd.from_dict(wine_dict)
 
-        wine = Wine(fixed_acidity=fixed_acidity, volatile_acidity=volatile_acidity, citric_acid=citric_acid, residual_sugar=residual_sugar, chlorides=chlorides, free_sulfur_dioxide=free_sulfur_dioxide, total_sulfur_dioxide=total_sulfur_dioxide, density=density, pH=pH, sulphates=sulphates, alcohol=alcohol)
-        db.session.add(wine)
-        db.session.commit()
-        return redirect("/", code=302)
+    # wine_dict = {
+    #     "fixed_acidity": fixed_acidity,
+    #     "volatile_acidity": volatile_acidity,
+    #     "citric_acid": citric_acid,
+    #     "residual_sugar": residual_sugar,
+    #     "chlorides": chlorides,
+    #     "free_sulfur_dioxide": free_sulfur_dioxide,
+    #     "total_sulfur_dioxide": total_sulfur_dioxide,
+    #     "density": density,
+    #     "pH": pH,
+    #     "sulphates": sulphates,
+    #     "alcohol": alcohol
+    # }
+    # wine_df = pd.from_dict(wine_dict)
 
-    return render_template("predict_new_wine.html")
+    '''
+    wine = Wine(fixed_acidity=fixed_acidity, volatile_acidity=volatile_acidity, citric_acid=citric_acid, residual_sugar=residual_sugar, chlorides=chlorides, free_sulfur_dioxide=free_sulfur_dioxide, total_sulfur_dioxide=total_sulfur_dioxide, density=density, pH=pH, sulphates=sulphates, alcohol=alcohol)
+    db.session.add(wine)
+    db.session.commit()
+
+    '''
+
+    temp = tempfile.TemporaryFile(mode="w+t", delete=False)
+
+    keys  = [f"\"{key}\"" for key in wine_data.keys()]
+    header = ",".join(keys)
+    values = ",".join(wine_data.values())
+
+    try:
+        #temp.write(bytes(f"{header}\n{values}", encoding="utf-8"))
+        temp.write(f"{header}\n{values}")
+
+        csv_filename = temp.name
+        
+        model = ML()
+        prediction = model.predict(csv_filename)
+        #prediction = model.predict("C:\\Users\\Home\\AppData\\Local\\Temp\\tmplb_r0bhk")
+
+    finally:
+        temp.close()
+    
+    return render_template("predict_new_wine.html", result=prediction)
 
 @app.route("/api/wine")
 def wine():
