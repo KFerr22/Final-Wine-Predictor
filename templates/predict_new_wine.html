@@ -30,19 +30,21 @@
       <div class="row margin-top-50">
         <img  src="static/images/whitewineshades.jpg" width="200"  height=auto>
         <p>Enter the physical and chemical characteristics of your new white wine and it will
-          predict its quality on a scale of 3-9, 3 being low and 9 being high quality  </p>
-        <button class="btn" onClick="window.location.reload();">Clear Input Values</button>
+          predict its quality</p>
+        <!-- <button class="btn" onClick="window.location.reload();">Clear Input Values</button> -->
         <!-- <button id="button" type="button" class="btn">Run Prediction</button> -->
         <h2>Range values for white wine quality analysis </h2>  
         <body onload=showallcharacterictics()> </body>
                    
-        <div class="col-md-6">
+        <!-- <div class="col-md-6"> -->
+        <div class="col-md-5">
           <aside class="filters">
             <div class="panel panel-default">
-              <div class="panel-heading">Filter Search</div>
+              <!-- <div class="panel-heading">Filter Search</div> -->
               <div class="panel-body">
                 <div class="form-group">
                   <form method="POST" action="/send" role="form" name="wineform">
+                    <br>
                     <div class="form-group">
                       <label for="inputfixedacidity">Enter Fixed Acidity</label>
                       <input type="text" class="form-control" id="fixed_acidity" name="fixed_acidity"
@@ -98,12 +100,14 @@
                         placeholder="Value between 8 & 14.2">
                     </div>
                     <input id="button" type="submit" value="Run Prediction" class="btn btn-default">
-                  </form>
+                    </form>
+                    <br>
+                    <button class="btn" onClick="window.location.reload();">Clear Input Values</button>
               </div>
             </div>
           </aside>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-7">
           <div id="table-area" class="">
             <table id="ranges-table" class="table table-striped">
               <thead>
