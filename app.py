@@ -8,7 +8,7 @@ from flask import (
     request)
 
 #from flask_pymongo import PyMongo
-import new_wine_predictor
+# import new_wine_predictor
 
 app = Flask(__name__)
 
@@ -55,7 +55,7 @@ def index():
 
 @app.route("/predict_new_wine")
 def predict_new_wine():
-    new_wine_predictor
+    # new_wine_predictor
     return render_template("predict_new_wine.html")
 
 # Query the database and send the jsonified results
