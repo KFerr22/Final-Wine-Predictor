@@ -1,5 +1,5 @@
 from collections import namedtuple
-from sklearn.linear_model import LogisticRegression
+# from sklearn.linear_model import LogisticRegression
 import os
 import pandas as pd
 from flask import (
