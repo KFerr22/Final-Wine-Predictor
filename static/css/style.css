@@ -206,6 +206,13 @@ select {
   }
 }
 
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+}
+
 /* keyframe animations which will be used to animate the title */
 @keyframes title {
   from {
